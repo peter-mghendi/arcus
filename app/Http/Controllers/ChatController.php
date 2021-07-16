@@ -19,7 +19,12 @@ class ChatController extends Controller
     public function chat()
     {
         $users = User::where('id', '<>', Auth::id())->get();
-        return Inertia::render('Chat', ['users' => $users]);
+        return Inertia::render('Chat', [
+            'allusers' => $users,
+            'authuserid'=> auth()->id(),
+            'authuser'=> auth()->user(),
+            'agora_id' => config('services.agora.app_id')
+        ]);
     }
 
     /**

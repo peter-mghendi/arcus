@@ -15,6 +15,7 @@
 
         <!-- Scripts -->
         @routes
+        <script src=”https://cdn.agora.io/sdk/release/AgoraRTCSDK-3.3.1.js”></script>
         <script src="{{ mix('js/app.js') }}" defer></script>
     </head>
     <body class="font-sans antialiased">
