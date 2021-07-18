@@ -22,7 +22,7 @@ class ChatController extends Controller
         return Inertia::render('Chat', [
             'allusers' => $users,
             'authuserid'=> auth()->id(),
-            'authuser'=> auth()->user(),
+            'authuser'=> auth()->user()->name,
             'agora_id' => config('services.agora.app_id')
         ]);
     }

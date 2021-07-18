@@ -5,37 +5,23 @@
     </template>
 
     <div class="py-12">
-
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
         <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-          <div class="container">
-            <div class="row">
-              <div class="col-12 text-center">
-                <img
-                  src="img/agora-logo.png"
-                  alt="Agora Logo"
-                  class="img-fuild"
-                />
-              </div>
-            </div>
-          </div>
-          
           <div class="container my-5">
             <div class="row">
               <div class="col">
                 <div class="btn-group" role="group">
                   <button
                     type="button"
-                    class="btn btn-primary mr-2"
+                    class="rounded-full hover:shadow-inner p-2 mr-2"
                     v-for="user in allusers"
                     :key="user.id"
                     @click="placeCall(user.id, user.name)"
                   >
                     Call {{ user.name }}
-                    <span class="badge badge-light">{{
-                      getUserOnlineStatus(user.id)
-                    }}</span>
+                    <span class="text-sm bg-blue-500 rounded-full text-white px-2 py-1 ml-2">
+                      {{ getUserOnlineStatus(user.id) }}
+                    </span>
                   </button>
                 </div>
               </div>
@@ -94,9 +80,7 @@
             </div>
           </section>
         </div>
-
       </div>
-
     </div>
   </app-layout>
 </template>
@@ -109,7 +93,7 @@ export default {
     AppLayout,
   },
   props: ["authuser", "authuserid", "allusers", "agora_id"],
-  data() {
+  data: function() {
     return {
       callPlaced: false,
       client: null,
@@ -123,7 +107,8 @@ export default {
       agoraChannel: null,
     };
   },
-  mounted() {
+  mounted: function() {
+    console.log("Created");
     this.initUserOnlineChannel();
     this.initUserOnlineListeners();
   },
@@ -133,14 +118,15 @@ export default {
      * Provided by Laravel.
      * Websockets with Pusher
      */
-    initUserOnlineChannel() {
+    initUserOnlineChannel: function() {
       this.userOnlineChannel = window.Echo.join("agora-online-channel");
     },
-    initUserOnlineListeners() {
+    initUserOnlineListeners: function() {
       this.userOnlineChannel.here((users) => {
         this.onlineUsers = users;
       });
       this.userOnlineChannel.joining((user) => {
+        console.log("Joining: ", user);
         // check user availability
         const joiningUserIndex = this.onlineUsers.findIndex(
           (data) => data.id === user.id
@@ -157,6 +143,7 @@ export default {
       });
       // listen to incomming call
       this.userOnlineChannel.listen("MakeAgoraCall", ({ data }) => {
+        console.log("Receiving call");
         if (parseInt(data.userToCall) === parseInt(this.authuserid)) {
           const callerIndex = this.onlineUsers.findIndex(
             (user) => user.id === data.from
@@ -169,7 +156,7 @@ export default {
         }
       });
     },
-    getUserOnlineStatus(id) {
+    getUserOnlineStatus: function(id) {
       const onlineUserIndex = this.onlineUsers.findIndex(
         (data) => data.id === id
       );
@@ -178,7 +165,7 @@ export default {
       }
       return "Online";
     },
-    async placeCall(id, calleeName) {
+    placeCall: async function(id, calleeName) {
       try {
         // channelName = the caller's and the callee's id. you can use anything. tho.
         const channelName = `${this.authuser}_${calleeName}`;
@@ -195,19 +182,19 @@ export default {
         console.log(error);
       }
     },
-    async acceptCall() {
+    acceptCall: async function() {
       this.initializeAgora();
       const tokenRes = await this.generateToken(this.agoraChannel);
       this.joinRoom(tokenRes.data, this.agoraChannel);
       this.incomingCall = false;
       this.callPlaced = true;
     },
-    declineCall() {
+    declineCall: function() {
       // You can send a request to the caller to
       // alert them of rejected call
       this.incomingCall = false;
     },
-    generateToken(channelName) {
+    generateToken: function(channelName) {
       return axios.post("/token", {
         channelName,
       });
@@ -215,7 +202,7 @@ export default {
     /**
      * Agora Events and Listeners
      */
-    initializeAgora() {
+    initializeAgora: function() {
       this.client = AgoraRTC.createClient({ mode: "rtc", codec: "h264" });
       this.client.init(
         this.agora_id,
@@ -227,7 +214,7 @@ export default {
         }
       );
     },
-    async joinRoom(token, channel) {
+    joinRoom: async function(token, channel) {
       this.client.join(
         token,
         channel,
@@ -243,7 +230,7 @@ export default {
         }
       );
     },
-    initializedAgoraListeners() {
+    initializedAgoraListeners: function() {
       //   Register event listeners
       this.client.on("stream-published", function (evt) {
         console.log("Publish local stream successfully");
@@ -277,7 +264,7 @@ export default {
         console.log(evt);
       });
     },
-    createLocalStream() {
+    createLocalStream: function() {
       this.localStream = AgoraRTC.createStream({
         audio: true,
         video: true,
@@ -297,7 +284,7 @@ export default {
         }
       );
     },
-    endCall() {
+    endCall: function() {
       this.localStream.close();
       this.client.leave(
         () => {
@@ -309,7 +296,7 @@ export default {
         }
       );
     },
-    handleAudioToggle() {
+    handleAudioToggle: function() {
       if (this.mutedAudio) {
         this.localStream.unmuteAudio();
         this.mutedAudio = false;
@@ -318,7 +305,7 @@ export default {
         this.mutedAudio = true;
       }
     },
-    handleVideoToggle() {
+    handleVideoToggle: function() {
       if (this.mutedVideo) {
         this.localStream.unmuteVideo();
         this.mutedVideo = false;

@@ -25,13 +25,11 @@
 <script>
 import AppLayout from "@/Layouts/AppLayout";
 import JetApplicationLogo from "@/Jetstream/ApplicationLogo";
-import Welcome from "@/Jetstream/Welcome";
 
 export default {
   components: {
     AppLayout,
     JetApplicationLogo,
-    Welcome,
   },
 };
 </script>
