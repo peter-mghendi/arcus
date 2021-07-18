@@ -16,17 +16,9 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+Route::inertia('/', 'Home')->name('home');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::inertia('/dashboard', 'Dashboard')->name('dashboard');
     Route::get('/chat', [ChatController::class, 'chat'])->name('chat');
     Route::post('/token', [ChatController::class, 'token']);
     Route::post('/call', [ChatController::class, 'call']);

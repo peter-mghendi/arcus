@@ -5,7 +5,9 @@
     </template>
 
     <div class="py-12">
+
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
         <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
           <div class="container">
             <div class="row">
@@ -18,6 +20,7 @@
               </div>
             </div>
           </div>
+          
           <div class="container my-5">
             <div class="row">
               <div class="col">
@@ -91,7 +94,9 @@
             </div>
           </section>
         </div>
+
       </div>
+
     </div>
   </app-layout>
 </template>
@@ -327,9 +332,6 @@ export default {
 </script>
 
 <style scoped>
-main {
-  margin-top: 50px;
-}
 #video-container {
   width: 700px;
   height: 500px;
